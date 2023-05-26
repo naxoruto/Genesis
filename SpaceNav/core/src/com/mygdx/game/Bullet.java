@@ -10,6 +10,7 @@ public class Bullet {
 
 	private int xSpeed;
 	private int ySpeed;
+	private boolean segunda;
 	private boolean destroyed = false;
 	private Sprite spr;
 	    
@@ -20,15 +21,16 @@ public class Bullet {
 	        this.ySpeed = ySpeed;
 	    }
 	    public void update() {
-	        spr.setPosition(spr.getX()+xSpeed, spr.getY()+ySpeed);
+	    	
+	    	spr.setPosition(spr.getX()+xSpeed, spr.getY()+ySpeed);
 	        if (spr.getX() < 0 || spr.getX()+spr.getWidth() > Gdx.graphics.getWidth()) {
 	            destroyed = true;
 	        }
 	        if (spr.getY() < 0 || spr.getY()+spr.getHeight() > Gdx.graphics.getHeight()) {
 	        	destroyed = true;
 	        }
-	        
 	    }
+	    
 	    
 	    public void draw(SpriteBatch batch) {
 	    	spr.draw(batch);
@@ -45,5 +47,6 @@ public class Bullet {
 	    }
 	    
 	    public boolean isDestroyed() {return destroyed;}
-	
+	    
+	    
 }

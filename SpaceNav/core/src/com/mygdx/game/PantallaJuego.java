@@ -6,7 +6,6 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,49 +17,40 @@ public class PantallaJuego implements Screen {
 	private SpaceNavigation game;
 	private OrthographicCamera camera;	
 	private SpriteBatch batch;
-	private Sound explosionSound;
 	private Music gameMusic;
 	private int score;
 	private int ronda;
-	private int velXAsteroides; 
-	private int velYAsteroides; 
-	private int cantAsteroides;
 	private Michahel michahel;
 	private  ArrayList<Demonio> balls1 = new ArrayList<>();
 	private  ArrayList<Bullet> balas = new ArrayList<>();
 
 
-	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
-			int velXAsteroides, int velYAsteroides, int cantAsteroides) {
+	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score) {
 		this.game = game;
 		this.ronda = ronda;
 		this.score = score;
-		this.velXAsteroides = velXAsteroides;
-		this.velYAsteroides = velYAsteroides;
-		this.cantAsteroides = cantAsteroides;
-		
 		batch = game.getBatch();
 		camera = new OrthographicCamera();	
 		camera.setToOrtho(false, 800, 640);
 		//inicializar assets; musica de fondo y efectos de sonido
-		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-		explosionSound.setVolume(1,0.5f);
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav")); //
 		
 		gameMusic.setLooping(true);
 		gameMusic.setVolume(0.5f);
 		gameMusic.play();
 		
-	    // cargar imagen de Michahel, 64x64   
-	     michahel = new Michahel (Gdx.graphics.getWidth()/2-50, 30, new Texture(Gdx.files.internal("MainShip3.png")), 
-	    		3, false, false, new Texture(Gdx.files.internal("Rocket2.png")), Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
-        //crear Demonio
+	    // Load Michahel's image, 64x64   
+	     michahel = new Michahel (Gdx.graphics.getWidth()/2-50, 30, 
+	    		 new Texture(Gdx.files.internal("MainShip3.png")),3,false, false);
+        // Create Demons
         Random r = new Random();
-	    for (int i = 0; i < cantAsteroides; i++) {
+	    for (int i = 0; i < 7; i++) {
 	        Demonio bb = new Demonio(r.nextInt((int)Gdx.graphics.getWidth()),50+r.nextInt((int)Gdx.graphics.getHeight()-50),
-	        		new Texture(Gdx.files.internal("aGreyMedium4.png")),1, velXAsteroides+r.nextInt(4+4) + 1, velYAsteroides+r.nextInt(4+4)-10,
+	        		new Texture(Gdx.files.internal("aGreyMedium4.png")),1, 1+r.nextInt(4+4) + 1, 1+r.nextInt(4+4)-10,
 	  	            20+r.nextInt(10));
 	  	    balls1.add(bb);
+	  	  //System.out.print(balls1.get(0).xSpeed);
+	  	    
 	  	}
 	}
     
@@ -82,9 +72,7 @@ public class PantallaJuego implements Screen {
 		            Bullet b = balas.get(i);
 		            b.update();
 		            for (int j = 0; j < balls1.size(); j++) { 
-		            	
 		              if (b.checkCollision(balls1.get(j))) {          
-		            	 explosionSound.play();
 		            	 balls1.remove(j);
 		            	 j--;
 		            	 score +=10;
@@ -98,8 +86,9 @@ public class PantallaJuego implements Screen {
 		            }
 		      }
 		      //actualizar movimiento de asteroides dentro del area
+	    	  
 		      for (Demonio ball : balls1) {
-		          ball.movimiento();
+		          ball.update();
 		      }
 	      }
 	      //dibujar balas
@@ -129,9 +118,8 @@ public class PantallaJuego implements Screen {
   		  }
 	      batch.end();
 	      //nivel completado
-	      if (balls1.size()==0) {
-			Screen ss = new PantallaJuego(game,ronda+1, michahel.getVidas(), score, 
-					velXAsteroides+3, velYAsteroides+3, cantAsteroides+10);
+	      if (balls1.size()==0) { 
+			Screen ss = new PantallaJuego(game,ronda+1, michahel.getVidas(), score);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();
@@ -176,7 +164,6 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		this.explosionSound.dispose();
 		this.gameMusic.dispose();
 	}
    

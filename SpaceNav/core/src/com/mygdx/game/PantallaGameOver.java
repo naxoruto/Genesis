@@ -28,12 +28,12 @@ public class PantallaGameOver implements Screen {
 
 		game.getBatch().begin();
 		game.getFont().draw(game.getBatch(), "Game Over !!! ", 120, 400,400,1,true);
-		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
+		game.getFont().draw(game.getBatch(), "Presiona Enter para reiniciar", 100, 300);
 	
 		game.getBatch().end();
 
-		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,1,1,10);
+		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+			Screen ss = new PantallaJuego(game,1,3,0);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();
